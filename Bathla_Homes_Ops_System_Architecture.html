@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bathla Homes — System Architecture</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',-apple-system,sans-serif;background:#f8f9fb;color:#1a1a2e;line-height:1.6}
+  .container{max-width:960px;margin:0 auto;padding:40px 24px 60px}
+  .header{text-align:center;margin-bottom:48px}
+  .header h1{font-size:28px;font-weight:700;color:#1a1a2e;margin-bottom:8px}
+  .header p{font-size:15px;color:#6b7280;max-width:600px;margin:0 auto}
+  .badge{display:inline-block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;padding:4px 14px;border-radius:20px;background:#eff6ff;color:#2563eb;margin-bottom:16px}
+  .sec-t{font-size:20px;font-weight:700;color:#1a1a2e;margin:48px 0 8px;text-align:center}
+  .sec-s{font-size:14px;color:#9ca3af;text-align:center;margin-bottom:28px}
+  .dia{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:32px 20px 28px;margin-bottom:48px;overflow-x:auto}
+  .dia svg text{font-family:'Inter',-apple-system,sans-serif}
+  .layers{display:flex;flex-direction:column;gap:4px;margin-bottom:8px}
+  .layer{display:flex;align-items:center;gap:16px;padding:16px 20px;background:#fff;border:1px solid #e5e7eb;border-radius:12px;cursor:pointer;transition:all .2s}
+  .layer:hover{border-color:#93c5fd;background:#fafbff}
+  .layer.active{border-color:#3b82f6;background:#eff6ff}
+  .ln{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0}
+  .lt{flex:1}.lt-t{font-size:15px;font-weight:600;color:#1a1a2e}.lt-s{font-size:12px;color:#9ca3af;margin-top:1px}
+  .la{color:#d1d5db;font-size:14px;transition:color .2s}.layer.active .la{color:#3b82f6}
+  .cn{display:flex;justify-content:center;padding:2px 0}.cn-l{width:1px;height:16px;background:#d1d5db}
+  .dp{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:28px;margin-top:16px;min-height:220px}
+  .dp-t{font-size:18px;font-weight:700;color:#1a1a2e;margin-bottom:10px}
+  .dp-d{font-size:14px;color:#4b5563;line-height:1.75;margin-bottom:16px}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+  .tag{font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px}
+  .td{background:#f3f4f6;color:#6b7280}.tt{background:#eff6ff;color:#2563eb}.tc{background:#ecfdf5;color:#059669}.tw{background:#fffbeb;color:#d97706}
+  .fl{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:16px;padding:12px 16px;background:#f9fafb;border-radius:10px}
+  .fs{font-size:12px;font-weight:500;color:#374151;background:#fff;padding:5px 12px;border-radius:8px;border:1px solid #e5e7eb}
+  .fa{color:#9ca3af;font-size:13px}
+  .il{list-style:none;padding:0}.il li{font-size:13px;color:#4b5563;padding:6px 0 6px 20px;position:relative;line-height:1.6}
+  .il li::before{content:'';position:absolute;left:0;top:14px;width:6px;height:6px;border-radius:50%;background:#d1d5db}
+  .n1{background:#fef2f2;color:#dc2626}.n2{background:#f5f3ff;color:#7c3aed}.n3{background:#fffbeb;color:#d97706}
+  .n4{background:#eff6ff;color:#2563eb}.n5{background:#ecfdf5;color:#059669}.n6{background:#fdf2f8;color:#db2777}
+  .ft{text-align:center;margin-top:48px;padding-top:24px;border-top:1px solid #e5e7eb;font-size:12px;color:#9ca3af}
+  @media(max-width:640px){.container{padding:24px 16px 40px}.header h1{font-size:22px}.layer{padding:12px 14px;gap:12px}.dp{padding:20px 18px}.dia{padding:16px 8px}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="badge">System architecture v2.0</div>
+    <h1>Bathla Homes &mdash; Ops intelligence platform</h1>
+    <p>Six layers from data entry to AI-powered insights. Scroll for the full data flow, then click each layer to explore details.</p>
+  </div>
+
+  <div class="sec-t">How data flows through the system</div>
+  <div class="sec-s">From ops team entry to CEO's morning inbox</div>
+
+  <div class="dia">
+    <svg width="100%" viewBox="0 0 900 1060" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1.5L8 5L2 8.5" fill="none" stroke="#9ca3af" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
+        <marker id="ab" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1.5L8 5L2 8.5" fill="none" stroke="#3b82f6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
+      </defs>
+
+      <rect x="60" y="20" width="780" height="100" rx="14" fill="#fef7f0" stroke="#f0d0b0" stroke-width="1"/>
+      <text x="450" y="44" text-anchor="middle" font-size="11" font-weight="600" fill="#9ca3af" letter-spacing="1">LAYER 1</text>
+      <text x="450" y="64" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e">Source sheets (ops team maintains daily)</text>
+      <rect x="100" y="80" width="110" height="30" rx="8" fill="#dc2626" opacity="0.9"/><text x="155" y="100" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">Blinkit</text>
+      <rect x="228" y="80" width="110" height="30" rx="8" fill="#dc2626" opacity="0.9"/><text x="283" y="100" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">Zepto</text>
+      <rect x="356" y="80" width="110" height="30" rx="8" fill="#9ca3af" opacity="0.7"/><text x="411" y="100" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">Swiggy</text>
+      <rect x="484" y="80" width="110" height="30" rx="8" fill="#9ca3af" opacity="0.7"/><text x="539" y="100" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">BigBasket</text>
+      <rect x="612" y="80" width="110" height="30" rx="8" fill="#9ca3af" opacity="0.7"/><text x="667" y="100" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">Clicktech</text>
+
+      <line x1="450" y1="120" x2="450" y2="160" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#ah)"/>
+      <rect x="355" y="130" width="190" height="20" rx="4" fill="#f3f4f6"/><text x="450" y="144" text-anchor="middle" font-size="11" fill="#6b7280">Scheduled pull (hourly)</text>
+
+      <rect x="60" y="160" width="780" height="170" rx="14" fill="#faf5ff" stroke="#d8b4fe" stroke-width="1"/>
+      <text x="450" y="184" text-anchor="middle" font-size="11" font-weight="600" fill="#9ca3af" letter-spacing="1">LAYER 2</text>
+      <text x="450" y="204" text-anchor="middle" font-size="15" font-weight="600" fill="#6b21a8">Google Apps Script engine</text>
+      <rect x="100" y="220" width="200" height="44" rx="10" fill="#ede9fe" stroke="#c4b5fd" stroke-width="0.75"/>
+      <text x="200" y="238" text-anchor="middle" font-size="13" font-weight="600" fill="#6b21a8">Data ingestion</text>
+      <text x="200" y="254" text-anchor="middle" font-size="11" fill="#8b5cf6">Per-platform adapters</text>
+      <rect x="350" y="220" width="200" height="44" rx="10" fill="#ede9fe" stroke="#c4b5fd" stroke-width="0.75"/>
+      <text x="450" y="238" text-anchor="middle" font-size="13" font-weight="600" fill="#6b21a8">KPI computation</text>
+      <text x="450" y="254" text-anchor="middle" font-size="11" fill="#8b5cf6">24 metrics + alerts</text>
+      <rect x="600" y="220" width="200" height="44" rx="10" fill="#ede9fe" stroke="#c4b5fd" stroke-width="0.75"/>
+      <text x="700" y="238" text-anchor="middle" font-size="13" font-weight="600" fill="#6b21a8">Supabase sync</text>
+      <text x="700" y="254" text-anchor="middle" font-size="11" fill="#8b5cf6">REST API push</text>
+      <line x1="300" y1="242" x2="348" y2="242" stroke="#c4b5fd" stroke-width="1" marker-end="url(#ah)"/>
+      <line x1="550" y1="242" x2="598" y2="242" stroke="#c4b5fd" stroke-width="1" marker-end="url(#ah)"/>
+      <rect x="100" y="278" width="300" height="32" rx="8" fill="#f3f4f6" stroke="#e5e7eb" stroke-width="0.5"/>
+      <text x="250" y="298" text-anchor="middle" font-size="11" fill="#6b7280">Cross-reference: _src_sheet, _src_tab, _src_row</text>
+
+      <line x1="350" y1="330" x2="350" y2="380" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#ah)"/>
+      <text x="340" y="360" text-anchor="end" font-size="11" fill="#6b7280">Writes to Sheet</text>
+      <path d="M700 264 L700 355 L580 355 L580 380" fill="none" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#ab)"/>
+      <text x="710" y="320" text-anchor="start" font-size="11" fill="#3b82f6">Syncs to Postgres</text>
+
+      <rect x="60" y="380" width="400" height="155" rx="14" fill="#fffbeb" stroke="#fcd34d" stroke-width="1"/>
+      <text x="260" y="404" text-anchor="middle" font-size="11" font-weight="600" fill="#9ca3af" letter-spacing="1">LAYER 3 — SOURCE OF TRUTH</text>
+      <text x="260" y="424" text-anchor="middle" font-size="15" font-weight="600" fill="#92400e">Management data sheet</text>
+      <rect x="80" y="440" width="85" height="26" rx="6" fill="#dbeafe"/><text x="122" y="458" text-anchor="middle" font-size="10" font-weight="500" fill="#1e40af">raw_pending</text>
+      <rect x="172" y="440" width="90" height="26" rx="6" fill="#dbeafe"/><text x="217" y="458" text-anchor="middle" font-size="10" font-weight="500" fill="#1e40af">raw_dispatch</text>
+      <rect x="269" y="440" width="80" height="26" rx="6" fill="#dbeafe"/><text x="309" y="458" text-anchor="middle" font-size="10" font-weight="500" fill="#1e40af">raw_pricing</text>
+      <rect x="356" y="440" width="85" height="26" rx="6" fill="#dbeafe"/><text x="398" y="458" text-anchor="middle" font-size="10" font-weight="500" fill="#1e40af">raw_open_po</text>
+      <rect x="80" y="474" width="90" height="26" rx="6" fill="#dcfce7"/><text x="125" y="492" text-anchor="middle" font-size="10" font-weight="500" fill="#166534">kpi_cache</text>
+      <rect x="178" y="474" width="90" height="26" rx="6" fill="#dcfce7"/><text x="223" y="492" text-anchor="middle" font-size="10" font-weight="500" fill="#166534">source_map</text>
+      <rect x="276" y="474" width="80" height="26" rx="6" fill="#fed7aa"/><text x="316" y="492" text-anchor="middle" font-size="10" font-weight="500" fill="#9a3412">config</text>
+      <rect x="363" y="474" width="85" height="26" rx="6" fill="#fecaca"/><text x="405" y="492" text-anchor="middle" font-size="10" font-weight="500" fill="#991b1b">issues_log</text>
+      <text x="260" y="524" text-anchor="middle" font-size="10" fill="#9ca3af">10 visible tabs &bull; color-coded &bull; fully auditable</text>
+
+      <rect x="500" y="380" width="340" height="155" rx="14" fill="#eff6ff" stroke="#93c5fd" stroke-width="1"/>
+      <text x="670" y="404" text-anchor="middle" font-size="11" font-weight="600" fill="#9ca3af" letter-spacing="1">LAYER 4 — FAST QUERY LAYER</text>
+      <text x="670" y="424" text-anchor="middle" font-size="15" font-weight="600" fill="#1e40af">Supabase Postgres</text>
+      <rect x="520" y="444" width="140" height="24" rx="6" fill="#dbeafe"/><text x="590" y="460" text-anchor="middle" font-size="10" font-weight="500" fill="#1e40af">Sub-100ms SQL</text>
+      <rect x="668" y="444" width="150" height="24" rx="6" fill="#dbeafe"/><text x="743" y="460" text-anchor="middle" font-size="10" font-weight="500" fill="#1e40af">Row-level security</text>
+      <rect x="520" y="476" width="140" height="24" rx="6" fill="#dcfce7"/><text x="590" y="492" text-anchor="middle" font-size="10" font-weight="500" fill="#166534">Google OAuth</text>
+      <rect x="668" y="476" width="150" height="24" rx="6" fill="#dcfce7"/><text x="743" y="492" text-anchor="middle" font-size="10" font-weight="500" fill="#166534">CRON scheduling</text>
+      <text x="670" y="524" text-anchor="middle" font-size="10" fill="#9ca3af">Read-replica &bull; synced hourly &bull; Free tier: $0/mo</text>
+
+      <line x1="460" y1="458" x2="498" y2="458" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#ab)"/>
+      <text x="479" y="450" text-anchor="middle" font-size="9" fill="#3b82f6">sync</text>
+
+      <line x1="670" y1="535" x2="670" y2="590" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#ah)"/>
+      <text x="680" y="568" text-anchor="start" font-size="11" fill="#6b7280">Reads from Supabase</text>
+
+      <rect x="60" y="590" width="780" height="195" rx="14" fill="#ecfdf5" stroke="#86efac" stroke-width="1"/>
+      <text x="450" y="614" text-anchor="middle" font-size="11" font-weight="600" fill="#9ca3af" letter-spacing="1">LAYER 5 — PRESENTATION</text>
+      <text x="450" y="634" text-anchor="middle" font-size="15" font-weight="600" fill="#166534">Next.js dashboard (Vercel)</text>
+      <rect x="90" y="650" width="225" height="50" rx="10" fill="#d1fae5" stroke="#86efac" stroke-width="0.75"/>
+      <text x="202" y="670" text-anchor="middle" font-size="12" font-weight="600" fill="#166534">/dashboard</text>
+      <text x="202" y="688" text-anchor="middle" font-size="10" fill="#059669">Executive pulse &mdash; 5 KPIs, traffic lights</text>
+      <rect x="337" y="650" width="225" height="50" rx="10" fill="#d1fae5" stroke="#86efac" stroke-width="0.75"/>
+      <text x="449" y="670" text-anchor="middle" font-size="12" font-weight="600" fill="#166534">/platforms</text>
+      <text x="449" y="688" text-anchor="middle" font-size="10" fill="#059669">Platform scorecard &mdash; side-by-side</text>
+      <rect x="584" y="650" width="225" height="50" rx="10" fill="#d1fae5" stroke="#86efac" stroke-width="0.75"/>
+      <text x="696" y="670" text-anchor="middle" font-size="12" font-weight="600" fill="#166534">/fulfillment</text>
+      <text x="696" y="688" text-anchor="middle" font-size="10" fill="#059669">PO tracker &mdash; urgency, lifecycle</text>
+      <rect x="90" y="714" width="225" height="50" rx="10" fill="#d1fae5" stroke="#86efac" stroke-width="0.75"/>
+      <text x="202" y="734" text-anchor="middle" font-size="12" font-weight="600" fill="#166534">/margins</text>
+      <text x="202" y="752" text-anchor="middle" font-size="10" fill="#059669">Margin monitor &mdash; anomaly alerts</text>
+      <rect x="337" y="714" width="225" height="50" rx="10" fill="#d1fae5" stroke="#86efac" stroke-width="0.75"/>
+      <text x="449" y="734" text-anchor="middle" font-size="12" font-weight="600" fill="#166534">/warehouses</text>
+      <text x="449" y="752" text-anchor="middle" font-size="10" fill="#059669">Stock heatmap, demand-supply</text>
+      <rect x="584" y="714" width="225" height="50" rx="10" fill="#d1fae5" stroke="#86efac" stroke-width="0.75"/>
+      <text x="696" y="734" text-anchor="middle" font-size="12" font-weight="600" fill="#166534">/issues</text>
+      <text x="696" y="752" text-anchor="middle" font-size="10" fill="#059669">GRN, RTVs, tickets, actions</text>
+
+      <line x1="450" y1="785" x2="450" y2="835" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#ah)"/>
+      <text x="440" y="815" text-anchor="end" font-size="11" fill="#6b7280">Chatbot widget</text>
+      <path d="M780 535 L860 535 L860 860 L780 860" fill="none" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#ab)"/>
+      <text x="872" y="720" text-anchor="middle" font-size="11" fill="#3b82f6" writing-mode="tb">Direct Postgres query</text>
+
+      <rect x="60" y="835" width="780" height="130" rx="14" fill="#fdf2f8" stroke="#f9a8d4" stroke-width="1"/>
+      <text x="450" y="859" text-anchor="middle" font-size="11" font-weight="600" fill="#9ca3af" letter-spacing="1">LAYER 6 — INTELLIGENCE</text>
+      <text x="450" y="879" text-anchor="middle" font-size="15" font-weight="600" fill="#9d174d">Lamatic AI (no model lock-in)</text>
+      <rect x="90" y="895" width="230" height="44" rx="10" fill="#fce7f3" stroke="#f9a8d4" stroke-width="0.75"/>
+      <text x="205" y="912" text-anchor="middle" font-size="12" font-weight="600" fill="#9d174d">Chatbot widget</text>
+      <text x="205" y="928" text-anchor="middle" font-size="10" fill="#be185d">NL queries + source citations</text>
+      <rect x="340" y="895" width="230" height="44" rx="10" fill="#fce7f3" stroke="#f9a8d4" stroke-width="0.75"/>
+      <text x="455" y="912" text-anchor="middle" font-size="12" font-weight="600" fill="#9d174d">Daily CXO digest</text>
+      <text x="455" y="928" text-anchor="middle" font-size="10" fill="#be185d">7 AM PDF email, automated</text>
+      <rect x="590" y="895" width="230" height="44" rx="10" fill="#fce7f3" stroke="#f9a8d4" stroke-width="0.75"/>
+      <text x="705" y="912" text-anchor="middle" font-size="12" font-weight="600" fill="#9d174d">Report agents</text>
+      <text x="705" y="928" text-anchor="middle" font-size="10" fill="#be185d">Weekly summaries, deep analysis</text>
+
+      <line x1="205" y1="965" x2="205" y2="1000" stroke="#9ca3af" stroke-width="1" marker-end="url(#ah)"/>
+      <line x1="455" y1="965" x2="455" y2="1000" stroke="#9ca3af" stroke-width="1" marker-end="url(#ah)"/>
+      <line x1="705" y1="965" x2="705" y2="1000" stroke="#9ca3af" stroke-width="1" marker-end="url(#ah)"/>
+      <rect x="100" y="1005" width="210" height="28" rx="8" fill="#f3f4f6"/><text x="205" y="1024" text-anchor="middle" font-size="11" fill="#4b5563">Dashboard widget</text>
+      <rect x="350" y="1005" width="210" height="28" rx="8" fill="#f3f4f6"/><text x="455" y="1024" text-anchor="middle" font-size="11" fill="#4b5563">CEO inbox (PDF)</text>
+      <rect x="600" y="1005" width="210" height="28" rx="8" fill="#f3f4f6"/><text x="705" y="1024" text-anchor="middle" font-size="11" fill="#4b5563">On-demand reports</text>
+
+      <line x1="90" y1="1050" x2="120" y2="1050" stroke="#9ca3af" stroke-width="1.5" marker-end="url(#ah)"/><text x="128" y="1054" font-size="10" fill="#9ca3af">Data flow</text>
+      <line x1="250" y1="1050" x2="280" y2="1050" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#ab)"/><text x="288" y="1054" font-size="10" fill="#3b82f6">Supabase connection</text>
+      <rect x="430" y="1042" width="14" height="14" rx="3" fill="#dc2626" opacity="0.9"/><text x="452" y="1054" font-size="10" fill="#9ca3af">Active platform</text>
+      <rect x="570" y="1042" width="14" height="14" rx="3" fill="#9ca3af" opacity="0.7"/><text x="592" y="1054" font-size="10" fill="#9ca3af">To be shared</text>
+    </svg>
+  </div>
+
+  <div class="sec-t">Explore each layer</div>
+  <div class="sec-s">Click any layer to see contents, tech, and costs</div>
+  <div class="layers">
+    <div class="layer active" onclick="show(0)" id="r0"><div class="ln n1">1</div><div class="lt"><div class="lt-t">Google Sheets (5 platform ops sheets)</div><div class="lt-s">Where the ops team enters data daily</div></div><div class="la">&#9654;</div></div>
+    <div class="cn"><div class="cn-l"></div></div>
+    <div class="layer" onclick="show(1)" id="r1"><div class="ln n2">2</div><div class="lt"><div class="lt-t">Google Apps Script (data engine)</div><div class="lt-s">Pulls, normalizes, cross-references, syncs</div></div><div class="la">&#9654;</div></div>
+    <div class="cn"><div class="cn-l"></div></div>
+    <div class="layer" onclick="show(2)" id="r2"><div class="ln n3">3</div><div class="lt"><div class="lt-t">Management data sheet (source of truth)</div><div class="lt-s">10 visible tabs, color-coded, fully auditable</div></div><div class="la">&#9654;</div></div>
+    <div class="cn"><div class="cn-l"></div></div>
+    <div class="layer" onclick="show(3)" id="r3"><div class="ln n4">4</div><div class="lt"><div class="lt-t">Supabase Postgres (fast query layer)</div><div class="lt-s">Read-replica, sub-100ms SQL, row-level security</div></div><div class="la">&#9654;</div></div>
+    <div class="cn"><div class="cn-l"></div></div>
+    <div class="layer" onclick="show(4)" id="r4"><div class="ln n5">5</div><div class="lt"><div class="lt-t">Next.js dashboard (presentation)</div><div class="lt-s">Rich charts, mobile-responsive, deployed on Vercel</div></div><div class="la">&#9654;</div></div>
+    <div class="cn"><div class="cn-l"></div></div>
+    <div class="layer" onclick="show(5)" id="r5"><div class="ln n6">6</div><div class="lt"><div class="lt-t">Lamatic AI (intelligence)</div><div class="lt-s">Chatbot, daily CXO digest, report agents</div></div><div class="la">&#9654;</div></div>
+  </div>
+  <div class="dp" id="detail"></div>
+  <div class="ft">Bathla Homes &mdash; E-Commerce Ops Intelligence Platform &mdash; March 2026 &mdash; Confidential</div>
+</div>
+<script>
+const D=[
+{t:"Layer 1: Google Sheets (ops workspace)",d:"Five separate Google Sheets, one per platform (Blinkit, Zepto, Swiggy, BigBasket, Clicktech). The ops team enters data manually, updates PO statuses, tracks dispatch and GRN, manages pricing. Nothing changes for them \u2014 their workflow stays exactly the same.",tags:[{t:"Blinkit",c:"td"},{t:"Zepto",c:"td"},{t:"Swiggy",c:"td"},{t:"BigBasket",c:"td"},{t:"Clicktech",c:"td"},{t:"Manual + formulas",c:"tw"}],items:["Pending orders summary (SKU, qty, value per platform)","Dispatch tracker (PO \u2192 Invoice \u2192 Ship \u2192 Deliver \u2192 GRN)","Open PO line items with fill rates","Pricing master (SP, BP, NLC, MRP, margin)","Warehouse analytics and demand data (Blinkit only currently)","Contact info, portal logins, appointment templates"]},
+{t:"Layer 2: Google Apps Script (data engine)",d:"Scheduled functions running every hour. Each platform has its own adapter (syncBlinkit, syncZepto, etc.) that maps its unique columns to a standard format. Every data point gets tagged with its source sheet, tab, row, and column for full traceability.",tags:[{t:"Apps Script",c:"tt"},{t:"Hourly CRON",c:"tt"},{t:"$0 cost",c:"tc"}],flow:["5 Source Sheets","Adapters","Normalize","Data Sheet","Supabase"],items:["syncBlinkit(), syncZepto() \u2014 platform-specific adapters","normalizeSchema() \u2014 canonical format conversion","computeKPIs() \u2014 calculates all 24 KPIs","syncToSupabase() \u2014 REST API push to Postgres","Cross-ref metadata: _src_sheet_id, _src_tab, _src_row, _src_col"]},
+{t:"Layer 3: Management data sheet (source of truth)",d:"One Google Sheet, 10 visible color-coded tabs. No hidden tabs. The authoritative data source \u2014 if someone corrects a number here, the next sync pushes it everywhere. A database you can open in a browser and edit with your fingers.",tags:[{t:"Blue: raw data",c:"tt"},{t:"Green: computed",c:"tc"},{t:"Orange: config",c:"tw"},{t:"All visible",c:"td"}],items:["raw_pending \u2014 normalized orders from all 5 platforms","raw_dispatch \u2014 PO lifecycle from all platforms","raw_open_po \u2014 line items with fill rates","raw_pricing \u2014 cross-platform pricing matrix","raw_analytics \u2014 warehouse DRR, MRR, demand","kpi_cache \u2014 24 KPIs, refreshed hourly","source_map \u2014 every row \u2192 source cell reference","config \u2014 platform registry, thresholds, roles","product_master \u2014 canonical 120+ SKU catalog","issues_log \u2014 GRN discrepancies, RTVs, tickets"]},
+{t:"Layer 4: Supabase Postgres (fast query layer)",d:"Read-replica synced hourly. Google Sheets API: 2\u20134 seconds per query. Supabase: 20\u201350 milliseconds. Dashboard loads instantly. Real SQL, row-level security, built-in CRON. Free tier handles our needs for 12\u201318+ months.",tags:[{t:"Free: $0/mo",c:"tc"},{t:"500MB / 50K rows",c:"tc"},{t:"Sub-100ms",c:"tt"},{t:"Row-level security",c:"tt"},{t:"Google OAuth",c:"tt"}],items:["Tables mirror Sheet tabs 1:1","Source cross-references on every row","Indexed: platform, sku_code, po_number","RLS: CEO sees all, ops sees assigned platforms","CRON: daily digest at 7 AM, freshness checks"]},
+{t:"Layer 5: Next.js dashboard (presentation)",d:"Real web app, not a cramped spreadsheet. Interactive charts, mobile-responsive, beautiful on phones. Deployed on Vercel. CEO sees 5 big numbers. Red means drill down. Ops managers see everything by default.",tags:[{t:"Vercel",c:"tt"},{t:"Recharts + D3",c:"tt"},{t:"Mobile-first",c:"tt"},{t:"Google OAuth",c:"tt"}],items:["/dashboard \u2014 Executive Pulse: 5 KPIs, traffic lights","/dashboard/platforms \u2014 Scorecard: side-by-side","/dashboard/fulfillment \u2014 PO tracker, urgency colors","/dashboard/margins \u2014 Pricing matrix, anomalies","/dashboard/warehouses \u2014 Stock heatmap, demand gaps","/dashboard/issues \u2014 GRN, RTVs, tickets, actions"]},
+{t:"Layer 6: Lamatic AI (intelligence)",d:"Direct Postgres connection. No model lock-in. Three capabilities: (1) chatbot widget for natural language questions, (2) daily PDF email to CXOs at 7 AM, (3) on-demand report generation for deep analyses.",tags:[{t:"No lock-in",c:"tt"},{t:"Postgres direct",c:"tt"},{t:"PDF gen",c:"tt"},{t:"Widget",c:"tt"}],items:["Chatbot: \u2018Which POs expire this week?\u2019 \u2192 answer + source","Chatbot: \u2018Compare margins for ladders\u2019 \u2192 cross-platform","Daily: 5 KPIs + alerts \u2192 PDF \u2192 CXO email at 7 AM","Weekly: full ops summary, auto-generated","Every answer cites exact Google Sheet row"]}
+];
+function show(i){
+document.querySelectorAll('.layer').forEach((e,j)=>e.classList.toggle('active',j===i));
+const d=D[i];let h='<div class="dp-t">'+d.t+'</div><div class="dp-d">'+d.d+'</div><div class="tags">';
+d.tags.forEach(t=>h+='<span class="tag '+t.c+'">'+t.t+'</span>');h+='</div>';
+if(d.flow){h+='<div class="fl">';d.flow.forEach((s,j)=>{h+='<span class="fs">'+s+'</span>';if(j<d.flow.length-1)h+='<span class="fa">\u2192</span>'});h+='</div>'}
+h+='<ul class="il">';d.items.forEach(x=>h+='<li>'+x+'</li>');h+='</ul>';
+document.getElementById('detail').innerHTML=h}
+show(0);
+</script>
+</body>
+</html>
