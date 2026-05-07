@@ -15,11 +15,11 @@ packages/*/dist/
 .DS_Store
 .vercel/
 
-# Claude Code (per-user)
-.claude/settings.local.json
-
 # Logs
 *.log
 
-# Inspiration
+# Docs and Private Stuff
 inspiration/
+.claude/
+docs/
+CLAUDE.md
