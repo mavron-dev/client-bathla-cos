@@ -163,6 +163,25 @@ async function resolveCallerTz(
   return DEFAULT_TZ
 }
 
+/**
+ * Lightweight lookup used by route handlers BEFORE they delegate to a mutation
+ * service: returns just the assignedToId so the route can call
+ * `assertCallerCanAccess(ctx, assignedToId)` and fail fast on a caller
+ * mismatch. Avoids loading the full task twice. Throws 404 on missing/deleted.
+ */
+export async function getTaskAssignee(id: string): Promise<string> {
+  const task = await withRetry(() =>
+    prisma.task.findUnique({
+      where: { id },
+      select: { assignedToId: true, isDeleted: true },
+    }),
+  )
+  if (!task || task.isDeleted) {
+    throw new ApiAuthError(404, 'NOT_FOUND', 'Task not found')
+  }
+  return task.assignedToId
+}
+
 export async function getTask(
   ctx: AuthContext,
   id: string,

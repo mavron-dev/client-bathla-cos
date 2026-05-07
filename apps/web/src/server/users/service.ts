@@ -76,6 +76,16 @@ const listUsersQuerySchema = z.object({
 })
 
 function assertCanReadUserDirectory(ctx: AuthContext): void {
+  // Agents are NEVER allowed to enumerate the user directory — they only
+  // operate on their own account (resolved from x-caller-phone). Lifting this
+  // restriction would let a jailbroken model phish the contact list.
+  if (ctx.kind === 'apiKey') {
+    throw new ApiAuthError(
+      403,
+      'FORBIDDEN',
+      'Agents cannot enumerate users',
+    )
+  }
   if (
     ctx.kind === 'session' &&
     ctx.role !== 'admin' &&
@@ -524,7 +534,8 @@ const agentContextQuerySchema = z.object({
   phone: z
     .string()
     .trim()
-    .regex(/^\+?[1-9]\d{6,14}$/, 'Phone must be E.164-ish, e.g. +919876543210'),
+    .regex(/^\+?[1-9]\d{6,14}$/, 'Phone must be E.164-ish, e.g. +919876543210')
+    .optional(),
 })
 
 export type AgentContextPayload = {
@@ -563,36 +574,69 @@ export async function getAgentContext(
   ctx: AuthContext,
   raw: unknown,
 ): Promise<AgentContextPayload> {
-  // Reads identity-level data + activity for the resolved user. apiKey or
-  // admin/dev session may call. Sessions targeting their own number resolve
-  // fine too, since it's a phone lookup, not an id check.
+  // Two callers:
+  //   - apiKey (the voice agent): ALWAYS uses the verified `ctx.caller`. Any
+  //     `?phone=` query the LLM might have constructed is ignored — the only
+  //     identity that counts is the one bound by ElevenLabs to
+  //     `system__caller_id`, which the model layer cannot forge.
+  //   - admin/dev session: phone-keyed lookup is preserved so the dashboard
+  //     can hydrate any user's bootstrap context for debugging.
   if (!isAdminish(ctx)) {
     throw new ApiAuthError(403, 'FORBIDDEN', 'Insufficient permissions')
   }
 
-  const { phone } = agentContextQuerySchema.parse(raw)
-  const stripped = phone.replace(/^\+/, '')
-
-  const user = await withRetry(() =>
-    prisma.user.findFirst({
-      where: { phoneE164: { in: [stripped, `+${stripped}`] } },
-      select: {
-        id: true,
-        displayName: true,
-        role: true,
-        languagePref: true,
-        timezone: true,
-        voiceReplyEnabled: true,
-        isActive: true,
-        optedInAt: true,
-      },
-    }),
-  )
-  if (!user) {
-    throw new ApiAuthError(404, 'NOT_FOUND', 'User not recognized')
+  let user: {
+    id: string
+    displayName: string
+    role: PublicUser['role']
+    languagePref: PublicUser['languagePref']
+    timezone: string
+    voiceReplyEnabled: boolean
+    isActive: boolean
   }
-  if (!user.isActive) {
-    throw new ApiAuthError(403, 'FORBIDDEN', 'User is inactive')
+
+  if (ctx.kind === 'apiKey') {
+    // requireApiAuth has already verified isActive and resolved the row.
+    user = {
+      id: ctx.caller.id,
+      displayName: ctx.caller.displayName,
+      role: ctx.caller.role,
+      languagePref: ctx.caller.languagePref,
+      timezone: ctx.caller.timezone,
+      voiceReplyEnabled: ctx.caller.voiceReplyEnabled,
+      isActive: ctx.caller.isActive,
+    }
+  } else {
+    const { phone } = agentContextQuerySchema.parse(raw)
+    if (!phone) {
+      throw new ApiAuthError(
+        400,
+        'BAD_REQUEST',
+        'phone query parameter is required for session callers',
+      )
+    }
+    const stripped = phone.replace(/^\+/, '')
+    const found = await withRetry(() =>
+      prisma.user.findFirst({
+        where: { phoneE164: { in: [stripped, `+${stripped}`] } },
+        select: {
+          id: true,
+          displayName: true,
+          role: true,
+          languagePref: true,
+          timezone: true,
+          voiceReplyEnabled: true,
+          isActive: true,
+        },
+      }),
+    )
+    if (!found) {
+      throw new ApiAuthError(404, 'NOT_FOUND', 'User not recognized')
+    }
+    if (!found.isActive) {
+      throw new ApiAuthError(403, 'FORBIDDEN', 'User is inactive')
+    }
+    user = found
   }
 
   const tz = user.timezone || DEFAULT_TZ
