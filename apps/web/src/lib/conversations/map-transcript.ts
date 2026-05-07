@@ -21,10 +21,10 @@ export interface MappedMessageInput {
  * ElevenLabs transcript turns → ConversationMessage rows.
  *
  * Notes:
- *   - The per-turn medium isn't reliably exposed in the payload, so we use
- *     the conversation-level `has_user_audio` flag as the heuristic for
- *     whether user turns came in as voice. WhatsApp text-only conversations
- *     have `has_user_audio=false` and produce `messageType='text'`.
+ *   - Per-turn medium isn't reliably exposed in the payload, so we infer
+ *     from conversation-level signals. `metadata.text_only === true` is the
+ *     strongest signal (WhatsApp text-only conversations); `has_user_audio`
+ *     is the older fallback for telephony / mixed conversations.
  *   - Tool-call-only turns (`message=null` with non-empty tool_calls) are
  *     preserved with placeholder content so the audit timeline is complete.
  *   - Empty turns (no message AND no tool calls) are skipped — these are
@@ -34,7 +34,8 @@ export function mapTranscriptToMessages(
   data: PostCallTranscriptionData,
 ): MappedMessageInput[] {
   if (!Array.isArray(data.transcript)) return []
-  const userTurnsAreVoice = data.has_user_audio === true
+  const isTextOnly = data.metadata?.text_only === true
+  const userTurnsAreVoice = !isTextOnly && data.has_user_audio === true
 
   return data.transcript
     .map((turn, idx) => mapTurn(turn, idx, userTurnsAreVoice))

@@ -204,11 +204,34 @@ model ConversationSession {
   metadata                 Json                  @default("{}")
   createdAt                DateTime              @default(now()) @map("created_at")
 
+  // ── Cost (extracted for analytics SUMs over time / per-user) ──
+  costCredits              Int?                  @map("cost_credits")
+
+  // ── Analysis (extracted for queries + list-view display) ──
+  callSuccessful           String?               @map("call_successful")
+  analysisTitle            String?               @map("analysis_title")
+  analysisSummary          String?               @map("analysis_summary") @db.Text
+
+  // ── WhatsApp context (extracted so we can filter "all from this phone") ──
+  whatsappUserId           String?               @map("whatsapp_user_id")
+  whatsappPhoneNumberId    String?               @map("whatsapp_phone_number_id")
+
+  // ── ElevenLabs internals worth pulling out ──
+  elevenlabsAgentId        String?               @map("elevenlabs_agent_id")
+  mainLanguage             String?               @map("main_language")
+  textOnly                 Boolean?              @map("text_only")
+
+  // ── Full-fidelity drill-down blobs ──
+  analysisRaw              Json?                 @map("analysis_raw")
+  chargingRaw              Json?                 @map("charging_raw")
+
   user                     User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   messages                 ConversationMessage[]
 
   @@index([userId, startedAt(sort: Desc)])
-  @@index([elevenlabsConversationId])
+  @@index([userId, createdAt(sort: Desc), costCredits])
+  @@index([callSuccessful, createdAt(sort: Desc)])
+  @@index([whatsappUserId])
 }
 
 enum ConversationChannel {

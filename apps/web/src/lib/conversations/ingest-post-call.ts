@@ -33,11 +33,11 @@ export async function ingestPostCallTranscription(
   // 1) Resolve user
   const user = await resolveUserFromTranscription(data)
   if (!user) {
-    const phoneAttempted = data.metadata?.phone_call?.external_number ?? '(none)'
-    const userIdAttempted = data.user_id ?? '(none)'
+    const userIdField = data.user_id ?? '(none)'
+    const waPhone = data.metadata?.whatsapp?.whatsapp_user_id ?? '(none)'
     return {
       status: 'orphaned',
-      reason: `No user matched. user_id=${userIdAttempted}, phone=${phoneAttempted}`,
+      reason: `No user matched. user_id=${userIdField}, whatsapp_user_id=${waPhone}`,
     }
   }
 
@@ -49,36 +49,67 @@ export async function ingestPostCallTranscription(
     ? new Date((startUnix + durationSecs) * 1000)
     : new Date()
 
-  // 3) Build the session metadata blob — captures the analysis summary
-  // alongside the raw conversation, so a future summarization cron has
-  // everything in one place.
-  const configOverride = data.conversation_initiation_client_data
-    ?.conversation_config_override as
-    | { agent?: { language?: string } }
-    | undefined
+  // 3) Build the persisted blobs.
+  //
+  // Hot-path fields are extracted into typed columns below (analytics dashboards
+  // hit them via indexes). The full-fidelity raw blobs preserve every field
+  // from the upstream payload for drill-down on the conversation detail view,
+  // and the slim `sessionMetadata` keeps the leftover odds and ends that
+  // don't merit their own columns.
+
+  const analysis = data.analysis ?? null
+  const charging = data.metadata?.charging ?? null
+  const whatsapp = data.metadata?.whatsapp ?? null
+
+  const analysisRaw: Prisma.InputJsonValue | null = analysis
+    ? ({
+        evaluation_criteria_results:
+          (analysis.evaluation_criteria_results as
+            | Prisma.InputJsonValue
+            | undefined) ?? {},
+        data_collection_results:
+          (analysis.data_collection_results as
+            | Prisma.InputJsonValue
+            | undefined) ?? {},
+        evaluation_criteria_results_list:
+          (analysis.evaluation_criteria_results_list as
+            | Prisma.InputJsonValue
+            | undefined) ?? [],
+        data_collection_results_list:
+          (analysis.data_collection_results_list as
+            | Prisma.InputJsonValue
+            | undefined) ?? [],
+      } as Prisma.InputJsonValue)
+    : null
+
+  const chargingRaw: Prisma.InputJsonValue | null = charging
+    ? (charging as unknown as Prisma.InputJsonValue)
+    : null
+
+  // Slim metadata: only the bits that aren't extracted into columns above.
   const sessionMetadata: Prisma.InputJsonObject = {
-    elevenlabs_agent_id: data.agent_id,
-    elevenlabs_user_id: data.user_id ?? null,
-    transcript_summary: data.analysis?.transcript_summary ?? null,
-    call_successful: data.analysis?.call_successful ?? null,
-    evaluation_criteria_results:
-      (data.analysis?.evaluation_criteria_results as
-        | Prisma.InputJsonValue
-        | undefined) ?? null,
-    data_collection_results:
-      (data.analysis?.data_collection_results as
-        | Prisma.InputJsonValue
-        | undefined) ?? null,
-    main_language: configOverride?.agent?.language ?? null,
-    cost: data.metadata?.cost ?? null,
-    has_audio: data.has_audio ?? false,
-    has_user_audio: data.has_user_audio ?? false,
-    has_response_audio: data.has_response_audio ?? false,
     termination_reason: data.metadata?.termination_reason ?? null,
+    feedback:
+      (data.metadata?.feedback as Prisma.InputJsonValue | undefined) ?? null,
+    timezone: data.metadata?.timezone ?? null,
+    warnings:
+      (data.metadata?.warnings as Prisma.InputJsonValue | undefined) ?? [],
+    initiator_id: data.metadata?.initiator_id ?? null,
     dynamic_variables:
       (data.conversation_initiation_client_data?.dynamic_variables as
         | Prisma.InputJsonValue
         | undefined) ?? null,
+    conversation_config_override:
+      (data.conversation_initiation_client_data
+        ?.conversation_config_override as
+        | Prisma.InputJsonValue
+        | undefined) ?? null,
+    has_audio: data.has_audio ?? false,
+    has_user_audio: data.has_user_audio ?? false,
+    has_response_audio: data.has_response_audio ?? false,
+    whatsapp_direction: whatsapp?.direction ?? null,
+    status: data.status,
+    tag_ids: data.tag_ids ?? [],
   }
 
   // 4) Map transcript turns to message rows
@@ -86,6 +117,25 @@ export async function ingestPostCallTranscription(
 
   // 5) Atomic upsert + bulk insert
   const result = await prisma.$transaction(async (tx) => {
+    // Column writes are split out so the create + update branches share
+    // the same payload (Prisma doesn't have a `set:` shorthand for upsert).
+    const sessionWrites = {
+      endedAt,
+      messageCount: mapped.length,
+      metadata: sessionMetadata,
+      costCredits: data.metadata?.cost ?? null,
+      callSuccessful: analysis?.call_successful ?? null,
+      analysisTitle: analysis?.call_summary_title ?? null,
+      analysisSummary: analysis?.transcript_summary ?? null,
+      whatsappUserId: whatsapp?.whatsapp_user_id ?? null,
+      whatsappPhoneNumberId: whatsapp?.whatsapp_phone_number_id ?? null,
+      elevenlabsAgentId: data.agent_id,
+      mainLanguage: data.metadata?.main_language ?? null,
+      textOnly: data.metadata?.text_only ?? null,
+      analysisRaw: analysisRaw ?? Prisma.JsonNull,
+      chargingRaw: chargingRaw ?? Prisma.JsonNull,
+    }
+
     const session = await tx.conversationSession.upsert({
       where: { elevenlabsConversationId: data.conversation_id },
       create: {
@@ -93,15 +143,9 @@ export async function ingestPostCallTranscription(
         elevenlabsConversationId: data.conversation_id,
         channel: 'whatsapp',
         startedAt,
-        endedAt,
-        messageCount: mapped.length,
-        metadata: sessionMetadata,
+        ...sessionWrites,
       },
-      update: {
-        endedAt,
-        messageCount: mapped.length,
-        metadata: sessionMetadata,
-      },
+      update: sessionWrites,
       select: { id: true },
     })
 
