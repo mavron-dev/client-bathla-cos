@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+.next/
+dist/
+packages/*/dist/
+
+# Environment
+.env
+.env.local
+.env*.local
+
+# OS / IDE
+.DS_Store
+.vercel/
+
+# Claude Code (per-user)
+.claude/settings.local.json
+
+# Logs
+*.log
+
+# Inspiration
+inspiration/

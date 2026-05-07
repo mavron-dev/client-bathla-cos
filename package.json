@@ -1,0 +1,25 @@
+{
+  "name": "bathla-cos",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.14.0",
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=10"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @bathla-cos/web dev",
+    "build": "pnpm --filter @bathla-cos/web build",
+    "lint": "pnpm --filter @bathla-cos/web lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
+    "db:generate": "pnpm --filter @bathla-cos/database db:generate",
+    "db:migrate:dev": "pnpm --filter @bathla-cos/database db:migrate:dev",
+    "db:studio": "pnpm --filter @bathla-cos/database db:studio"
+  },
+  "devDependencies": {
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.8.3",
+    "typescript": "^5.9.3"
+  }
+}
