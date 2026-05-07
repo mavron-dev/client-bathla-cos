@@ -12,6 +12,7 @@ import { useMemo } from 'react';
 import RenderResults from './render-result';
 import useThemeSwitching from './use-theme-switching';
 import { useFilteredNavItems } from '@/hooks/use-nav';
+import { KBarDynamicActions } from './dynamic-actions';
 
 export default function KBar({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -68,6 +69,9 @@ const KBarComponent = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <>
+      {/* Hydrates the cmd+k palette with admin user + recent conversation
+          actions on top of the static nav items above. Renders nothing. */}
+      <KBarDynamicActions />
       <KBarPortal>
         <KBarPositioner className='bg-background/80 fixed inset-0 z-99999 p-0! backdrop-blur-sm'>
           <KBarAnimator className='bg-card text-card-foreground relative mt-64! w-full max-w-[600px] -translate-y-12! overflow-hidden rounded-lg border shadow-lg'>

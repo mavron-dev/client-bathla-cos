@@ -1,23 +1,25 @@
 import PageContainer from '@/components/layout/page-container'
 import { requireAdminOrDev } from '@/lib/requireAuth'
-import { sessionAuthContext } from '@/lib/api-auth'
-import { listUsers } from '@/server/users/service'
-import { UsersListDashboard } from '@/features/users/components'
+import { getUsersWithStats } from '@/lib/dashboard/users'
+import { UsersGridDashboard } from '@/features/users/components/users-grid-dashboard'
 
 export const metadata = {
   title: 'Users · Admin · Bathla COS',
 }
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminUsersPage() {
-  const session = await requireAdminOrDev()
-  const ctx = sessionAuthContext(session)
-  // 'all' so the admin can toggle to inactive users client-side without a
-  // round-trip; the toolbar status filter applies on top of this initial set.
-  const users = await listUsers(ctx, { status: 'all', limit: 200 })
+  // Auth gate via the shared admin/dev helper.
+  await requireAdminOrDev()
+
+  // Status='all' so the client-side toolbar can flip between active/inactive
+  // without round-tripping. The cards display an "inactive" badge inline.
+  const users = await getUsersWithStats({ status: 'all' })
 
   return (
     <PageContainer scrollable>
-      <UsersListDashboard initialUsers={users} />
+      <UsersGridDashboard initialUsers={users} />
     </PageContainer>
   )
 }

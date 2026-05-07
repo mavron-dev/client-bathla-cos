@@ -2,7 +2,7 @@
   "type": "post_call_transcription",
   "event_timestamp": 1714060000,
   "data": {
-    "agent_id": "agent_butler_test",
+    "agent_id": "agent_bathla_cos_test",
     "conversation_id": "conv_test_001",
     "status": "done",
     "user_id": "REPLACE_WITH_REAL_USER_UUID_FROM_DB",
