@@ -199,7 +199,7 @@ model ConversationSession {
   startedAt                DateTime              @default(now()) @map("started_at")
   endedAt                  DateTime?             @map("ended_at")
   messageCount             Int                   @default(0) @map("message_count")
-  elevenlabsConversationId String?               @map("elevenlabs_conversation_id")
+  elevenlabsConversationId String?               @unique @map("elevenlabs_conversation_id")
   channel                  ConversationChannel   @default(whatsapp)
   metadata                 Json                  @default("{}")
   createdAt                DateTime              @default(now()) @map("created_at")
@@ -416,17 +416,36 @@ model WhatsappQualityLog {
 }
 
 model WebhookAudit {
-  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  source      String?   // 'elevenlabs' | 'whatsapp' | 'meta'
-  eventType   String?   @map("event_type")
-  eventId     String?   @map("event_id")
-  payload     Json?
-  receivedAt  DateTime  @default(now()) @map("received_at")
-  processed   Boolean   @default(false)
-  processedAt DateTime? @map("processed_at")
-  error       String?
+  id               String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  source           String                  // 'elevenlabs' | 'whatsapp_meta' | 'cost_tracker' | 'agent_<name>'
+  eventType        String                  @map("event_type") // provider-specific event name
+  eventId          String?                 @map("event_id")   // provider's primary id (e.g. ElevenLabs conversation_id)
+  signatureValid   Boolean                 @default(false) @map("signature_valid")
+  payload          Json
+  headers          Json?                   // snapshot of relevant request headers
+  processingStatus WebhookProcessingStatus @default(received) @map("processing_status")
+  processingError  String?                 @map("processing_error")
+  durationMs       Int?                    @map("duration_ms")
 
-  @@index([source, receivedAt(sort: Desc)])
+  // Loose entity refs — resolved during processing.
+  // No @relation, no cascade — entities can be deleted without breaking audit history.
+  userId           String?                 @map("user_id") @db.Uuid
+  sessionId        String?                 @map("session_id") @db.Uuid
+
+  receivedAt       DateTime                @default(now()) @map("received_at")
+  processedAt      DateTime?               @map("processed_at")
+
+  @@index([source, eventType, receivedAt(sort: Desc)])
   @@index([eventId])
-  @@index([processed, receivedAt])
+  @@index([processingStatus, receivedAt(sort: Desc)])
+  @@index([userId, receivedAt(sort: Desc)])
+}
+
+enum WebhookProcessingStatus {
+  received       // arrived, no processing started
+  invalid        // signature failed, malformed, or unsupported event
+  completed      // processed successfully
+  orphaned       // valid but no matching user/entity (logged, not an error)
+  skipped        // intentional skip (e.g. audio events in POC)
+  failed         // error during processing
 }

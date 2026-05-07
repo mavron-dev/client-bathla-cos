@@ -1,0 +1,84 @@
+{
+  "type": "post_call_transcription",
+  "event_timestamp": 1714060000,
+  "data": {
+    "agent_id": "agent_butler_test",
+    "conversation_id": "conv_test_001",
+    "status": "done",
+    "user_id": "REPLACE_WITH_REAL_USER_UUID_FROM_DB",
+    "transcript": [
+      {
+        "role": "agent",
+        "message": "Good morning Rahul. Today: partnership call at 11, board deck review by EOD.",
+        "tool_calls": null,
+        "tool_results": null,
+        "feedback": null,
+        "time_in_call_secs": 0,
+        "conversation_turn_metrics": null
+      },
+      {
+        "role": "user",
+        "message": "Defer the board deck to Friday.",
+        "tool_calls": null,
+        "tool_results": null,
+        "feedback": null,
+        "time_in_call_secs": 5
+      },
+      {
+        "role": "agent",
+        "message": null,
+        "tool_calls": [
+          {
+            "tool_name": "defer_task",
+            "request_id": "req_001",
+            "params_as_json": "{\"task_id\":\"task_xyz\",\"defer_to\":\"2026-04-25T17:00:00+05:30\"}"
+          }
+        ],
+        "tool_results": [
+          {
+            "request_id": "req_001",
+            "tool_name": "defer_task",
+            "result_value": "{\"success\":true}",
+            "is_error": false
+          }
+        ],
+        "feedback": null,
+        "time_in_call_secs": 6
+      },
+      {
+        "role": "agent",
+        "message": "Done. Board deck moved to Friday EOD.",
+        "tool_calls": null,
+        "tool_results": null,
+        "feedback": null,
+        "time_in_call_secs": 7
+      }
+    ],
+    "metadata": {
+      "start_time_unix_secs": 1714060000,
+      "call_duration_secs": 12,
+      "cost": 230,
+      "termination_reason": ""
+    },
+    "analysis": {
+      "evaluation_criteria_results": {},
+      "data_collection_results": {},
+      "call_successful": "success",
+      "transcript_summary": "User deferred board deck task to Friday. One tool call executed successfully."
+    },
+    "conversation_initiation_client_data": {
+      "conversation_config_override": {
+        "agent": {
+          "language": "en"
+        }
+      },
+      "custom_llm_extra_body": {},
+      "dynamic_variables": {
+        "user_name": "rahul"
+      }
+    },
+    "has_audio": true,
+    "has_user_audio": true,
+    "has_response_audio": false
+  }
+}
