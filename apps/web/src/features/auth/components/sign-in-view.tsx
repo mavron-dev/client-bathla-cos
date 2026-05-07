@@ -14,7 +14,7 @@ const slides = [
     category: 'Mission',
     icon: <Sparkles className="w-5 h-5" />,
     quote:
-      '"Butler exists so the principals at Bathla Homes can spend their day on judgment, not on chasing the next thing on a list."',
+      '"Bathla COS exists so the principals at Bathla Homes can spend their day on judgment, not on chasing the next thing on a list."',
     author: 'The Bathla COS premise',
   },
   {

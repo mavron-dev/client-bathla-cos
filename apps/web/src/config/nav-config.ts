@@ -2,7 +2,8 @@ import { NavItem } from '@/types'
 
 /**
  * Navigation for the /admin role group (admin + developer).
- * Bathla COS Phase 2 placeholders — most pages don't exist yet.
+ * Bathla COS Phase 2 — sections marked "(soon)" are placeholders for the
+ * upcoming dashboard waves; their pages don't exist yet.
  */
 export const navItems: NavItem[] = [
   {
@@ -11,6 +12,22 @@ export const navItems: NavItem[] = [
     icon: 'dashboard',
     isActive: false,
     shortcut: ['d', 'd'],
+    items: [],
+  },
+  {
+    title: 'Conversations',
+    url: '/admin/conversations',
+    icon: 'messages',
+    isActive: false,
+    shortcut: ['c', 'c'],
+    items: [],
+  },
+  {
+    title: 'Analytics',
+    url: '/admin/analytics',
+    icon: 'chart',
+    isActive: false,
+    shortcut: ['a', 'a'],
     items: [],
   },
   {
@@ -35,6 +52,14 @@ export const navItems: NavItem[] = [
     icon: 'users',
     isActive: false,
     shortcut: ['u', 'u'],
+    items: [],
+  },
+  {
+    title: 'Observability',
+    url: '/admin/observability',
+    icon: 'activity',
+    isActive: false,
+    shortcut: ['o', 'o'],
     items: [],
   },
   {

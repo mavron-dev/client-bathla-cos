@@ -23,7 +23,7 @@ export default function Home() {
             Bathla COS
           </h1>
           <p className="text-base text-muted-foreground">
-            Internal Chief of Staff for Butler Homes — operations, reminders, and tasks in one place.
+            Internal Chief of Staff for Bathla Homes — operations, reminders, and tasks in one place.
           </p>
         </div>
 
@@ -39,7 +39,7 @@ export default function Home() {
         </Link>
 
         <p className="text-xs text-muted-foreground/70">
-          Invite-only · Powered by Butler
+          Invite-only · Bathla COS
         </p>
       </div>
     </main>

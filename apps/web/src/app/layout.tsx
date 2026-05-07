@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: 'Bathla COS',
-  description: 'Internal Chief of Staff for Butler Homes',
+  description: 'Internal Chief of Staff for Bathla Homes',
 }
 
 export default async function RootLayout({

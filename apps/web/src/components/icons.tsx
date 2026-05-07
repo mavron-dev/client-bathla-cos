@@ -39,7 +39,10 @@ import {
   IconTarget,
   IconWallet,
   IconMessageCircle,
-  IconRobot
+  IconRobot,
+  IconChartHistogram,
+  IconActivity,
+  IconMessages
 } from '@tabler/icons-react';
 
 export type Icon = React.ComponentType<IconProps>;
@@ -89,6 +92,9 @@ export const Icons = {
   wallet: IconWallet,
   invoice: IconFileInvoice,
   messageCircle: IconMessageCircle,
-  robot: IconRobot
+  robot: IconRobot,
+  chart: IconChartHistogram,
+  activity: IconActivity,
+  messages: IconMessages
 };
 
