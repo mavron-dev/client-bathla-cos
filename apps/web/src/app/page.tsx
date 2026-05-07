@@ -1,23 +1,46 @@
 import Link from 'next/link'
 import { buttonVariants } from '@/components/ui/button'
+import { ArrowRight } from 'lucide-react'
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-zinc-50 to-zinc-100 p-8 dark:from-zinc-950 dark:to-zinc-900">
-      <div className="max-w-md space-y-6 text-center">
-        <div className="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-2xl font-bold text-primary-foreground">
+    <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-background p-8">
+      <div
+        className="pointer-events-none absolute inset-0 -z-10 opacity-[0.07] dark:opacity-[0.12]"
+        style={{
+          backgroundImage:
+            'radial-gradient(circle at 20% 30%, var(--primary) 0%, transparent 50%), radial-gradient(circle at 80% 70%, var(--primary) 0%, transparent 50%)',
+        }}
+      />
+
+      <div className="animate-fadeIn flex max-w-md flex-col items-center space-y-8 text-center">
+        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-2xl font-bold text-primary-foreground shadow-lg shadow-primary/20">
           B
         </div>
-        <h1 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-white">
-          Bathla COS
-        </h1>
-        <p className="text-base text-zinc-600 dark:text-zinc-400">
-          Internal Chief of Staff for Butler Homes — operations, reminders, and tasks in one place.
-        </p>
-        <Link href="/auth/sign-in" className={buttonVariants({ size: 'lg', className: 'mt-6' })}>
+
+        <div className="space-y-3">
+          <h1 className="text-5xl font-bold tracking-tight text-foreground">
+            Bathla COS
+          </h1>
+          <p className="text-base text-muted-foreground">
+            Internal Chief of Staff for Butler Homes — operations, reminders, and tasks in one place.
+          </p>
+        </div>
+
+        <Link
+          href="/auth/sign-in"
+          className={buttonVariants({
+            size: 'lg',
+            className: 'group gap-2 px-6',
+          })}
+        >
           Sign in to dashboard
+          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
         </Link>
-        <p className="text-xs text-zinc-500 dark:text-zinc-600">Invite-only · Powered by Butler</p>
+
+        <p className="text-xs text-muted-foreground/70">
+          Invite-only · Powered by Butler
+        </p>
       </div>
     </main>
   )

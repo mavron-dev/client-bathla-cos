@@ -9,7 +9,7 @@ import { Sparkles, Building2, MessageCircle } from 'lucide-react'
 const slides = [
   {
     id: 1,
-    bgClass: 'bg-gradient-to-br from-zinc-900 via-purple-950 to-zinc-950',
+    bgClass: 'bg-gradient-to-br from-zinc-950 via-orange-950/40 to-zinc-950',
     title: 'Operations clarity',
     category: 'Mission',
     icon: <Sparkles className="w-5 h-5" />,
@@ -19,7 +19,7 @@ const slides = [
   },
   {
     id: 2,
-    bgClass: 'bg-gradient-to-br from-zinc-900 via-blue-950 to-zinc-950',
+    bgClass: 'bg-gradient-to-br from-zinc-950 via-orange-900/30 to-zinc-950',
     title: 'Built for Bathla',
     category: 'Vision',
     icon: <Building2 className="w-5 h-5" />,
@@ -29,7 +29,7 @@ const slides = [
   },
   {
     id: 3,
-    bgClass: 'bg-gradient-to-br from-zinc-900 via-emerald-950 to-zinc-950',
+    bgClass: 'bg-gradient-to-br from-zinc-950 via-amber-900/30 to-zinc-950',
     title: 'WhatsApp-native',
     category: 'Promise',
     icon: <MessageCircle className="w-5 h-5" />,
@@ -76,14 +76,14 @@ export default function SignInViewPage() {
   if (status === 'loading') {
     return (
       <div className="flex h-screen items-center justify-center bg-zinc-950">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-zinc-800 border-t-purple-500" />
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-zinc-800 border-t-[var(--primary)]" />
       </div>
     )
   }
 
   return (
     <div className="relative h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
-      <div className="relative hidden h-full flex-col bg-zinc-900 text-white lg:flex overflow-hidden">
+      <div className="relative hidden h-full flex-col bg-zinc-950 text-white lg:flex overflow-hidden">
         <AnimatePresence>
           <motion.div
             key={slides[currentSlide].id}
@@ -95,10 +95,23 @@ export default function SignInViewPage() {
           />
         </AnimatePresence>
 
+        <div
+          className="pointer-events-none absolute inset-0 z-[5] opacity-30"
+          style={{
+            backgroundImage:
+              'radial-gradient(circle at 20% 80%, var(--primary) 0%, transparent 40%)',
+          }}
+        />
+
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
 
-        <div className="relative z-20 flex items-center p-10">
-          <span className="text-xl font-bold tracking-tight text-white">Bathla COS</span>
+        <div className="relative z-20 flex items-center gap-3 p-10">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-base font-bold text-primary-foreground shadow-lg shadow-primary/30">
+            B
+          </div>
+          <span className="text-xl font-bold tracking-tight text-white">
+            Bathla COS
+          </span>
         </div>
 
         <div className="relative z-20 mt-auto p-10">
@@ -120,7 +133,7 @@ export default function SignInViewPage() {
                 {slides[currentSlide].title}
               </h2>
 
-              <blockquote className="border-l-2 border-purple-500 pl-4">
+              <blockquote className="border-l-2 border-[var(--primary)] pl-4">
                 <p className="text-lg font-light text-zinc-300 italic">
                   {slides[currentSlide].quote}
                 </p>
@@ -136,7 +149,9 @@ export default function SignInViewPage() {
               <div
                 key={index}
                 className={`h-1 rounded-full transition-all duration-500 ${
-                  index === currentSlide ? 'w-8 bg-purple-500' : 'w-2 bg-zinc-700'
+                  index === currentSlide
+                    ? 'w-8 bg-[var(--primary)]'
+                    : 'w-2 bg-zinc-700'
                 }`}
               />
             ))}
@@ -144,36 +159,41 @@ export default function SignInViewPage() {
         </div>
       </div>
 
-      <div className="flex h-full items-center justify-center p-4 lg:p-8 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-zinc-950 dark:to-zinc-900">
-        <div className="flex w-full max-w-md flex-col items-center justify-center space-y-6">
+      <div className="flex h-full items-center justify-center bg-background p-4 lg:p-8">
+        <div className="animate-fadeIn flex w-full max-w-md flex-col items-center justify-center space-y-6">
           <div className="flex items-center gap-3 lg:hidden">
-            <span className="text-2xl font-semibold text-zinc-900 dark:text-white">Bathla COS</span>
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-base font-bold text-primary-foreground">
+              B
+            </div>
+            <span className="text-2xl font-semibold text-foreground">
+              Bathla COS
+            </span>
           </div>
 
-          <div className="text-center space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
+          <div className="space-y-2 text-center">
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">
               Welcome back
             </h1>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            <p className="text-sm text-muted-foreground">
               Sign in to access your dashboard
             </p>
           </div>
 
           {error && (
-            <div className="w-full rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900/50 dark:bg-red-900/10">
-              <p className="text-sm text-red-800 dark:text-red-400">
+            <div className="w-full rounded-lg border border-destructive/30 bg-destructive/5 p-4">
+              <p className="text-sm text-destructive">
                 {error === 'AccessDenied'
-                  ? '⚠️ Access denied. Your email is not in the invite list.'
-                  : '⚠️ An error occurred during sign in.'}
+                  ? 'Access denied. Your email is not in the invite list.'
+                  : 'An error occurred during sign in.'}
               </p>
             </div>
           )}
 
-          <div className="w-full space-y-4 rounded-2xl border border-zinc-200 bg-white p-8 shadow-lg dark:border-zinc-800 dark:bg-zinc-900/50 backdrop-blur-sm">
+          <div className="w-full space-y-4 rounded-2xl border border-border bg-card p-8 shadow-lg backdrop-blur-sm">
             <button
               onClick={handleGoogleSignIn}
               disabled={isLoading}
-              className="group relative w-full flex items-center justify-center gap-3 rounded-xl border border-zinc-300 bg-white px-6 py-3.5 text-base font-semibold text-zinc-900 shadow-sm transition-all hover:bg-zinc-50 hover:shadow-md hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed dark:border-zinc-700 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100"
+              className="group relative flex w-full items-center justify-center gap-3 rounded-xl border border-border bg-background px-6 py-3.5 text-base font-semibold text-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:bg-accent hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
             >
               <svg width="20" height="20" viewBox="0 0 24 24" className="shrink-0">
                 <path
@@ -198,18 +218,18 @@ export default function SignInViewPage() {
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-zinc-200 dark:border-zinc-700"></div>
+                <div className="w-full border-t border-border"></div>
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-2 text-zinc-500 dark:bg-zinc-900/50 dark:text-zinc-400">
+                <span className="bg-card px-2 text-muted-foreground">
                   Invite only
                 </span>
               </div>
             </div>
 
-            <div className="rounded-lg bg-blue-50 p-3 dark:bg-blue-900/10">
-              <p className="text-xs text-blue-900 dark:text-blue-400">
-                🔒 This is an invite-only platform. Only authorized email addresses can sign in.
+            <div className="rounded-lg border border-primary/15 bg-primary/5 p-3">
+              <p className="text-xs text-foreground/80">
+                This is an invite-only platform. Only authorized email addresses can sign in.
               </p>
             </div>
           </div>

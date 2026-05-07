@@ -6,7 +6,13 @@ import { ActiveThemeProvider } from './active-theme';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Toaster } from '@/components/ui/sonner';
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({
+  children,
+  initialTheme,
+}: {
+  children: React.ReactNode;
+  initialTheme?: string;
+}) {
   return (
     <SessionProvider>
       <ThemeProvider
@@ -15,7 +21,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         enableSystem
         disableTransitionOnChange
       >
-        <ActiveThemeProvider>
+        <ActiveThemeProvider initialTheme={initialTheme}>
           <TooltipProvider delayDuration={300}>
             {children}
             <Toaster richColors closeButton position="bottom-right" />

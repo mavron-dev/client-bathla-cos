@@ -1,0 +1,52 @@
+/* =============================================================================
+ * Theme presets for Bathla COS
+ *
+ * Two themes, each respecting the existing light/dark palette in globals.css
+ * and overriding only --primary, --primary-foreground, --ring, and the
+ * sidebar primary tokens. Switched at runtime by toggling a `theme-{name}`
+ * class on <body>, see components/active-theme.tsx.
+ *
+ *   theme-bathla   → brand orange #FF5200 (default)
+ *   theme-default  → neutral grayscale (off-brand fallback)
+ * =============================================================================
+ */
+
+:root {
+  --font-sans: var(--font-inter);
+}
+
+.theme-bathla {
+  --primary: oklch(0.679 0.229 36.85);
+  --primary-foreground: oklch(0.985 0 0);
+  --ring: oklch(0.679 0.229 36.85);
+  --sidebar-primary: oklch(0.679 0.229 36.85);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-ring: oklch(0.679 0.229 36.85);
+
+  @variant dark {
+    --primary: oklch(0.722 0.218 36.85);
+    --primary-foreground: oklch(0.985 0 0);
+    --ring: oklch(0.722 0.218 36.85);
+    --sidebar-primary: oklch(0.722 0.218 36.85);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-ring: oklch(0.722 0.218 36.85);
+  }
+}
+
+.theme-default {
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --ring: oklch(0.708 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+
+  @variant dark {
+    --primary: oklch(0.922 0 0);
+    --primary-foreground: oklch(0.205 0 0);
+    --ring: oklch(0.556 0 0);
+    --sidebar-primary: oklch(0.488 0.243 264.376);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-ring: oklch(0.556 0 0);
+  }
+}

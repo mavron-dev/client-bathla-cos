@@ -54,6 +54,13 @@ export const authConfig: NextAuthConfig = {
       // Always allow NextAuth's own API routes
       if (pathname.startsWith('/api/auth')) return true
 
+      // All other /api/* routes self-authenticate inside their handlers via
+      // `requireApiAuth(req)` (which accepts either an `x-api-key` header for
+      // the 11Labs voice agent OR a NextAuth session cookie for the dashboard).
+      // Letting the middleware redirect unauthed callers to /auth/sign-in
+      // would defeat API-key auth entirely.
+      if (pathname.startsWith('/api/')) return true
+
       // Logged-in user on landing or sign-in → redirect to role dashboard
       if (isLoggedIn && (pathname === '/' || pathname === '/auth/sign-in')) {
         const role = auth?.user?.role
