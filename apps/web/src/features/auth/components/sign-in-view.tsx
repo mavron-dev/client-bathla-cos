@@ -10,7 +10,7 @@ import { Sparkles, Building2, MessageCircle } from 'lucide-react'
 const slides = [
   {
     id: 1,
-    bgClass: 'bg-gradient-to-br from-zinc-950 via-orange-950/40 to-zinc-950',
+    image: '/sign-in-slide-ladder.webp',
     title: 'Operations clarity',
     category: 'Mission',
     icon: <Sparkles className="w-5 h-5" />,
@@ -20,7 +20,7 @@ const slides = [
   },
   {
     id: 2,
-    bgClass: 'bg-gradient-to-br from-zinc-950 via-orange-900/30 to-zinc-950',
+    image: '/sign-in-slide-storage.webp',
     title: 'Built for Bathla',
     category: 'Vision',
     icon: <Building2 className="w-5 h-5" />,
@@ -30,7 +30,7 @@ const slides = [
   },
   {
     id: 3,
-    bgClass: 'bg-gradient-to-br from-zinc-950 via-amber-900/30 to-zinc-950',
+    image: '/sign-in-slide-labour-day.webp',
     title: 'WhatsApp-native',
     category: 'Promise',
     icon: <MessageCircle className="w-5 h-5" />,
@@ -92,8 +92,17 @@ export default function SignInViewPage() {
             animate={{ scale: 1.0, opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1.5, ease: 'easeOut' }}
-            className={`absolute inset-0 z-0 ${slides[currentSlide].bgClass}`}
-          />
+            className="absolute inset-0 z-0"
+          >
+            <Image
+              src={slides[currentSlide].image}
+              alt={slides[currentSlide].title}
+              fill
+              sizes="(min-width: 1024px) 50vw, 0px"
+              priority={currentSlide === 0}
+              className="object-cover"
+            />
+          </motion.div>
         </AnimatePresence>
 
         <div
@@ -103,6 +112,8 @@ export default function SignInViewPage() {
               'radial-gradient(circle at 20% 80%, var(--primary) 0%, transparent 40%)',
           }}
         />
+
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-48 bg-gradient-to-b from-zinc-950/70 via-zinc-950/30 to-transparent" />
 
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
 
