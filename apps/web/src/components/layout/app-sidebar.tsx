@@ -48,6 +48,7 @@ import {
   IconUser,
   IconMail
 } from '@tabler/icons-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import * as React from 'react';
@@ -73,9 +74,14 @@ export default function AppSidebar({ navItems }: { navItems: NavItem[] }) {
       <Sidebar collapsible='icon'>
         <SidebarHeader>
           <div className='flex items-center gap-2 py-3 group-data-[collapsible=icon]:!p-0'>
-            <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold'>
-              B
-            </div>
+            <Image
+              src='/bathla-homes-logo.jpg'
+              alt='Bathla Homes'
+              width={32}
+              height={32}
+              priority
+              className='h-8 w-8 shrink-0 rounded-lg object-cover'
+            />
             <span className='font-semibold text-lg group-data-[collapsible=icon]:hidden'>
               Bathla COS
             </span>

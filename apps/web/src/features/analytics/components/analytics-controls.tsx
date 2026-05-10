@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import { IconLoader2 } from '@tabler/icons-react'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -35,27 +36,66 @@ export function AnalyticsControls({
   const pathname = usePathname()
   const sp = useSearchParams()
 
+  const [isPending, startTransition] = React.useTransition()
+  const [pendingTabRaw, setPendingTab] = React.useState<AnalyticsTab | null>(
+    null,
+  )
+  const [pendingRangeRaw, setPendingRange] =
+    React.useState<AnalyticsRangePreset | null>(null)
+
+  // Derive the visible pending value from `isPending` so the spinner clears
+  // automatically when the navigation transition resolves — no clearing effect
+  // needed.
+  const pendingTab = isPending ? pendingTabRaw : null
+  const pendingRange = isPending ? pendingRangeRaw : null
+
   const setParam = React.useCallback(
     (key: string, value: string) => {
       const next = new URLSearchParams(sp.toString())
       next.set(key, value)
       const qs = next.toString()
-      router.replace(qs ? `${pathname}?${qs}` : pathname)
+      startTransition(() => {
+        router.replace(qs ? `${pathname}?${qs}` : pathname)
+      })
     },
     [router, pathname, sp],
   )
 
+  const handleTabChange = React.useCallback(
+    (v: AnalyticsTab) => {
+      if (v === currentTab) return
+      setPendingTab(v)
+      setParam('tab', v)
+    },
+    [currentTab, setParam],
+  )
+
+  const handleRangeChange = React.useCallback(
+    (v: AnalyticsRangePreset) => {
+      if (v === currentRange) return
+      setPendingRange(v)
+      setParam('range', v)
+    },
+    [currentRange, setParam],
+  )
+
+  const activeTab = pendingTab ?? currentTab
+  const activeRange = pendingRange ?? currentRange
+
   return (
     <div className="flex flex-wrap items-center justify-between gap-3">
       <Tabs
-        value={currentTab}
-        onValueChange={(v) => setParam('tab', v)}
+        value={activeTab}
+        onValueChange={(v) => handleTabChange(v as AnalyticsTab)}
         className="w-fit"
       >
         <TabsList>
           {TABS.map((t) => (
             <TabsTrigger key={t.value} value={t.value}>
               {t.label}
+              {pendingTab === t.value && (
+                <IconLoader2 className="ml-1 size-3 animate-spin" />
+              )}
             </TabsTrigger>
           ))}
         </TabsList>
@@ -67,15 +107,18 @@ export function AnalyticsControls({
             key={r.value}
             variant="ghost"
             size="sm"
-            onClick={() => setParam('range', r.value)}
+            onClick={() => handleRangeChange(r.value)}
             className={cn(
-              'h-[calc(100%-1px)] rounded-md px-3 text-sm font-medium transition-colors',
-              currentRange === r.value
+              'h-[calc(100%-1px)] cursor-pointer rounded-md px-3 text-sm font-medium transition-colors',
+              activeRange === r.value
                 ? 'bg-background text-foreground shadow-sm'
                 : 'hover:text-foreground',
             )}
           >
             {r.label}
+            {pendingRange === r.value && (
+              <IconLoader2 className="ml-1 size-3 animate-spin" />
+            )}
           </Button>
         ))}
       </div>

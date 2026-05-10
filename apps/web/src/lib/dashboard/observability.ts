@@ -22,10 +22,14 @@ export type ObservabilityHealth = {
     messagingLimit: string | null
     checkedAt: Date | null
   } | null
+  jobs: {
+    pending: number
+    failed24h: number
+  }
 }
 
 export async function getObservabilityHealth(): Promise<ObservabilityHealth> {
-  const [statRow, qualityRow] = await Promise.all([
+  const [statRow, qualityRow, jobStatRow] = await Promise.all([
     withRetry(() =>
       prisma.$queryRaw<
         {
@@ -78,11 +82,26 @@ export async function getObservabilityHealth(): Promise<ObservabilityHealth> {
         },
       }),
     ),
+    // Jobs rollup — pending count + failed-24h count, used for the
+    // Observability page's "Jobs" tile that deep-links into /admin/jobs.
+    withRetry(() =>
+      prisma.$queryRaw<
+        { pending: bigint; failed_24h: bigint }[]
+      >`
+        SELECT
+          COUNT(*) FILTER (WHERE status = 'pending')                                AS pending,
+          COUNT(*) FILTER (
+            WHERE status = 'failed' AND finished_at >= NOW() - INTERVAL '24 hours'
+          )                                                                          AS failed_24h
+        FROM "Job"
+      `,
+    ),
   ])
 
   const s = statRow[0]
   const total = Number(s?.total_24h ?? 0)
   const completed = Number(s?.completed_24h ?? 0)
+  const j = jobStatRow[0]
   return {
     total24h: total,
     completed24h: completed,
@@ -99,6 +118,10 @@ export async function getObservabilityHealth(): Promise<ObservabilityHealth> {
           checkedAt: qualityRow.checkedAt,
         }
       : null,
+    jobs: {
+      pending: Number(j?.pending ?? 0),
+      failed24h: Number(j?.failed_24h ?? 0),
+    },
   }
 }
 

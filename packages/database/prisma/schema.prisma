@@ -62,6 +62,7 @@ model User {
   sessions          ConversationSession[]
   messages          ConversationMessage[]
   summaries         ConversationSummary[]
+  weeklySummaries   ConversationWeeklySummary[]
   reminderSchedules ReminderSchedule[]
   messageProcessing MessageProcessing[]
 
@@ -299,6 +300,26 @@ model ConversationSummary {
   @@index([userId, summaryDate(sort: Desc)])
 }
 
+model ConversationWeeklySummary {
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId            String   @map("user_id") @db.Uuid
+  weekStartDate     DateTime @map("week_start_date") @db.Date  // Monday of the week
+  weekEndDate       DateTime @map("week_end_date") @db.Date    // Sunday
+  summaryText       String   @map("summary_text")
+  keyThemes         Json?    @map("key_themes")         // ["string", ...]
+  taskMetrics       Json?    @map("task_metrics")       // { created, completed, deferred, completion_rate }
+  productivityScore Int?     @map("productivity_score") // 1-10
+  patternInsights   Json?    @map("pattern_insights")   // [{ type, observation }, ...]
+  dailySummaryIds   String[] @default([]) @map("daily_summary_ids") @db.Uuid  // provenance — refs to ConversationSummary.id
+  tokenCount        Int?     @map("token_count")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, weekStartDate])
+  @@index([userId, weekStartDate(sort: Desc)])
+}
+
 // =============================================================================
 // REMINDER SCHEDULES (per-user config — NOT job runs, those go in Job)
 // =============================================================================
@@ -377,6 +398,7 @@ enum JobType {
   reminder_send         // outbound template send for a user/slot
   reminder_check_run    // hourly classifier sweep across all users
   daily_summarization   // midnight per-user summary generation
+  weekly_summarization  // weekly per-user meta-summary across daily summaries
   whatsapp_quality_poll // daily Meta quality snapshot
   archive_messages      // move raw messages to Storage
   onboarding_optin      // send opt-in template to a new user
