@@ -1,3 +1,5 @@
+import Link from 'next/link'
+import { IconRobot, IconArrowRight } from '@tabler/icons-react'
 import {
   Card,
   CardContent,
@@ -16,7 +18,7 @@ export function HealthStrip({
 }) {
   const successPct = Math.round(health.successRate24h * 100)
   return (
-    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
       <StatCard
         label="Webhooks · 24h"
         value={health.total24h.toLocaleString('en-IN')}
@@ -48,6 +50,30 @@ export function HealthStrip({
             : 'No timing data yet'
         }
       />
+      <Link href="/admin/jobs" className="block">
+        <Card className="@container/card from-primary/5 to-card dark:bg-card hover:border-primary/40 bg-gradient-to-t shadow-xs transition">
+          <CardHeader className="pb-2">
+            <CardDescription className="flex items-center gap-1.5">
+              <IconRobot className="size-3.5 opacity-60" />
+              Jobs
+              <IconArrowRight className="ml-auto size-3 opacity-40" />
+            </CardDescription>
+            <CardTitle
+              className={cn(
+                'text-2xl font-semibold tabular-nums',
+                health.jobs.failed24h > 0 &&
+                  'text-rose-600 dark:text-rose-400',
+              )}
+            >
+              {health.jobs.pending.toLocaleString('en-IN')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-muted-foreground text-xs">
+            {health.jobs.pending.toLocaleString('en-IN')} pending ·{' '}
+            {health.jobs.failed24h.toLocaleString('en-IN')} failed (24h)
+          </CardContent>
+        </Card>
+      </Link>
       <Card className="@container/card">
         <CardHeader className="pb-2">
           <CardDescription>WhatsApp number</CardDescription>

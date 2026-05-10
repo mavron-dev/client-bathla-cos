@@ -21,12 +21,13 @@ export const navItems: NavItem[] = [
     shortcut: ['t', 't'],
     items: [],
   },
-  {
-    title: 'My reminders',
-    url: '/executive/reminders',
-    icon: 'messageCircle',
-    isActive: false,
-    shortcut: ['r', 'r'],
-    items: [],
-  },
+  // My reminders — hidden until the /executive/reminders page ships. Restore this entry when the feature is ready.
+  // {
+  //   title: 'My reminders',
+  //   url: '/executive/reminders',
+  //   icon: 'messageCircle',
+  //   isActive: false,
+  //   shortcut: ['r', 'r'],
+  //   items: [],
+  // },
 ]

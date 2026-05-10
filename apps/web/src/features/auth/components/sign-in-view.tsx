@@ -1,6 +1,7 @@
 'use client'
 
 import { signIn, useSession } from 'next-auth/react'
+import Image from 'next/image'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -106,9 +107,14 @@ export default function SignInViewPage() {
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
 
         <div className="relative z-20 flex items-center gap-3 p-10">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-base font-bold text-primary-foreground shadow-lg shadow-primary/30">
-            B
-          </div>
+          <Image
+            src="/bathla-homes-logo.jpg"
+            alt="Bathla Homes"
+            width={36}
+            height={36}
+            priority
+            className="h-9 w-9 rounded-xl object-cover shadow-lg shadow-primary/30"
+          />
           <span className="text-xl font-bold tracking-tight text-white">
             Bathla COS
           </span>
@@ -162,9 +168,13 @@ export default function SignInViewPage() {
       <div className="flex h-full items-center justify-center bg-background p-4 lg:p-8">
         <div className="animate-fadeIn flex w-full max-w-md flex-col items-center justify-center space-y-6">
           <div className="flex items-center gap-3 lg:hidden">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-base font-bold text-primary-foreground">
-              B
-            </div>
+            <Image
+              src="/bathla-homes-logo.jpg"
+              alt="Bathla Homes"
+              width={36}
+              height={36}
+              className="h-9 w-9 rounded-xl object-cover"
+            />
             <span className="text-2xl font-semibold text-foreground">
               Bathla COS
             </span>

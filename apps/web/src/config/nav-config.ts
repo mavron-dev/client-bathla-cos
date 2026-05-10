@@ -23,6 +23,14 @@ export const navItems: NavItem[] = [
     items: [],
   },
   {
+    title: 'Summaries',
+    url: '/admin/summaries',
+    icon: 'post',
+    isActive: false,
+    shortcut: ['s', 'u'],
+    items: [],
+  },
+  {
     title: 'Analytics',
     url: '/admin/analytics',
     icon: 'chart',
@@ -38,14 +46,15 @@ export const navItems: NavItem[] = [
     shortcut: ['t', 't'],
     items: [],
   },
-  {
-    title: 'Reminders',
-    url: '/admin/reminders',
-    icon: 'messageCircle',
-    isActive: false,
-    shortcut: ['r', 'r'],
-    items: [],
-  },
+  // Reminders — hidden until the /admin/reminders page ships. Restore this entry when the feature is ready.
+  // {
+  //   title: 'Reminders',
+  //   url: '/admin/reminders',
+  //   icon: 'messageCircle',
+  //   isActive: false,
+  //   shortcut: ['r', 'r'],
+  //   items: [],
+  // },
   {
     title: 'Users',
     url: '/admin/users',
